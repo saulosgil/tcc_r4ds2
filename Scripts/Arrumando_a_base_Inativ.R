@@ -1,12 +1,12 @@
-
 "%>%" <- magrittr::"%>%"
+
+# BASE DE DADOS DA WHO DE INATIVIDADE FÍSICA------------------------------------
 
 # Lendo a base de dados
 
 base_dados_bruta <-
   readr::read_csv("data-raw/NCD_PAA.csv",
                   col_names = TRUE,
-                  # col_types = "cdcnnnnn",
                   skip = 1
                   ) %>%
   dplyr::glimpse()
@@ -45,7 +45,7 @@ base_de_dados <-
     # Atribuindo as caracteristicas de cada vetor
     "Pais" = as.character(Pais),
     "Ano" = as.double(Ano),
-    "Grupo de idade" = as.character("Grupo de idade"),
+    "Grupo_de_idade" = as.character(Grupo_de_idade),
     "Ina_ambos_sexos" = as.double(Ina_ambos_sexos),
     "Ina_masc" = as.double(Ina_masc),
     "Ina_fem" = as.double(Ina_fem),
@@ -53,4 +53,4 @@ base_de_dados <-
   dplyr::glimpse() %>%
   tibble::view()
 
-readr::write_rds(x = base_de_dados, file = "data/base_de_dados.rds")
+readr::write_rds(x = base_de_dados, file = "data/inatividade_fisica.rds")
