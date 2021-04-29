@@ -32,6 +32,9 @@ MaiorMort <-
 
 MaiorMort
 
+ggplot2::ggsave("Graficos/MaiorMort.png", width = 10, height = 5)
+
+
 # Grafico dos 10 paises com menor taxa de mortalidade
 
 MenorMort <-
@@ -41,7 +44,7 @@ MenorMort <-
   ggplot2::ggplot(
     mapping = ggplot2::aes(x = Mort_ambos_sexos,
                            y = forcats::fct_reorder(
-                             Pais, Mort_ambos_sexos,.desc = TRUE),
+                             Pais, Mort_ambos_sexos,.desc = FALSE),
                            fill = Pais,
                            color = "#000000")) +
   ggplot2::geom_col(na.rm = TRUE, show.legend = FALSE) +
@@ -57,27 +60,7 @@ MenorMort <-
                                                      face = "bold"))
   )
 
+
 MenorMort
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ggplot2::ggsave("Graficos/MenorMort.png", width = 10, height = 5)
