@@ -1,10 +1,21 @@
 "%>%" <- magrittr::"%>%"
+install.packages('DT')
 
 # Lendo a raw-data de mortalidade
 
 base <-
   readr::read_csv("data-raw/data_mortality.csv",
                   skip = 1)
+
+# Tabela todos paises do mundo
+
+base %>%
+  dplyr::filter(Year == "2016") %>%
+  dplyr::select(Country, "Both sexes", Male, Female) %>%
+  DT::datatable(colnames = c("País", "Ambos sexos", "Homem", "Mulher"),
+                class = "cell-border stripe",
+                caption = "Tabela 1. Probabilidade de morte entre 15 e 60 anos por 1000 habitantes."
+                                )
 
 # Grafico de coluna de todos paises do mundo
 
@@ -15,7 +26,7 @@ base %>%
                                            Country, `Both sexes`,
                                            .desc = FALSE), fill = Country)) +
   ggplot2::geom_col(na.rm = TRUE, show.legend = FALSE) +
-  ggplot2::labs(title = "Taxa de Mortalidade ao redor do mundo",
+  ggplot2::labs(title = "Taxa de Mortalidade ao Redor do Mundo",
                 x = "Probabilidade de morte entre 15 e 60 anos por 1000 habitantes",
                 y = " ") +
   ggplot2::theme_light() +
@@ -82,7 +93,3 @@ america_sul %>%
                  axis.title = (ggplot2::element_text(size = 12,
                                                      face = "bold"))
   )
-
-
-
-
