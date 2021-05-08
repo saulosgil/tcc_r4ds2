@@ -11,25 +11,136 @@ knitr::opts_chunk$set(
 )
 ```
 
-# tcc_r4ds2
+
+# Obesidade e inatividade física como fatores de risco de Mortalidade na População Brasileira
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of tcc_r4ds2 is to ...
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# PIPE
+"%>%" <- magrittr::"%>%" 
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+# Lendo a base de dados
 
-```{r cars}
-summary(cars)
+base <-
+  readr::read_csv("data-raw/data_mortality.csv",
+                  skip = 1)
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>.
 
-You can also embed plots, for example:
+```{r echo=FALSE, message=TRUE, warning=TRUE, paged.print=TRUE}
 
-```{r pressure, echo = FALSE}
-plot(pressure)
+# Verificando a posição do Brasil no mundo
+
+posicao_br <- base %>%
+  dplyr::filter(Year == 2016) %>% 
+  dplyr::arrange(`Both sexes`, .desc = TRUE)
+
+pos_br_rmd <- which(posicao_br$Country %in% "Brazil")
+
+```
+O objetivo deste projeto foi verificar os países com maior taxa de mortalidade a partir da análise da base de dados disponibilizada pela Organização Mundial de Saúde (World Health Organization – WHO), verificar como o Brasil está disposto nesta lista considerando todos os países e apenas os países da América do Sul no qual o Brasil faz parte e, por fim, verificar a prevalência de obesidade e inatividade dois importantes fatores de risco para mortalidade.
+Primeiramente, foi analisada a base de dados de mortalidade da WHO. Considerando todos os países do mundo, o Brasil encontra-se na posição `r pos_br_rmd`. A tabela abaixo (Tabela 1) mostra os dados por pais divididos por sexo a fim de ilustrar a probabilidade de morte entre 15 e 60 anos por 1000 habitantes listando os paises por ordem alfabética.
+```{r echo=FALSE}
+base %>%
+  dplyr::filter(Year == "2016") %>%
+  dplyr::select(Country, "Both sexes", Male, Female) %>%
+  knitr::kable(
+    format = "html",
+    col.names = c("País", "Ambos sexos", "Homem", "Mulher"),
+    align = "cccc",
+    caption = "Tabela 1. Probabilidade de morte entre 15 e 60 anos por 1000 habitantes.",
+    format.args = list(big.mark = ",")
+  )
+  # kableExtra::kable_classic_2() %>% 
+  # kableExtra::scroll_box(width = "500px", height = "200px")
+
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub.
+Na América latina, a Guiana Francesa lidera a lista com a maior probabilidade de morte entre individuos com 15 a 60 anos de idade por 1000 pessoas. Já o Brasil encontra-se na 6° posição entre os paises latino americanos, estando na frente da Colombia (pois é, na frente da Colombia de Pablo Escobar), Peru, Argentina, Uruguai e Chile. Esses dados estão apresentados em detalhes na figura 1.
+Adicionalmente, quando observamos a evolução da probabilidade de morte dos paises latinos (Figura 2) nota-se que na última década esses valores permaneceram prativamente estáveis mesmo com avanços e descobertas importantes no tratamentos de doenças crônicas como, por exemplo, hipertensão arterial, diabetes, entre outras. Neste, cenário identificar possíveis fatores de risco de mortalidade se torna fundamental uma vez que a identificação dos fatores de risco podem possibilitar o desenvolvimento de políticas públicas e, a partir daí, reduzir os índices de mortalidade do Brasil. 
+```{r include=FALSE}
+br <- base %>% dplyr::filter(Country == "Brazil")
+arg <- base %>% dplyr::filter(Country == "Argentina")
+bol <- base %>% dplyr::filter(Country == "Bolivia (Plurinational State of)")
+ur <- base %>% dplyr::filter(Country == "Uruguay")
+ch <- base %>% dplyr::filter(Country == "Chile")
+ven <- base %>% dplyr::filter(Country == "Venezuela (Bolivarian Republic of)")
+col <- base %>% dplyr::filter(Country == "Colombia")
+per <- base %>% dplyr::filter(Country == "Peru")
+sur <- base %>% dplyr::filter(Country == "Suriname")
+par <- base %>% dplyr::filter(Country == "Paraguay")
+guy <- base %>% dplyr::filter(Country == "Guyana")
+
+# Jutando os elementos dos paises da america latina em uma mesma base
+
+america_sul <-
+  dplyr::bind_rows(br, arg, bol, ur, ch, ven, col, per, sur, par, guy)
+```
+```{r echo=FALSE}
+# Grafico de coluna dos paises da ameica latina
+
+america_sul %>%
+  ggplot2::ggplot(mapping = ggplot2::aes(x = `Both sexes`,
+                                         y = forcats::fct_reorder(
+                                          Country, `Both sexes`,
+                                          .desc = FALSE), fill = Country)) +
+  ggplot2::geom_col(na.rm = TRUE, show.legend = FALSE) +
+  ggplot2::labs(title = "Taxa de Mortalidade dos Países da América Latina",
+                x = "Probabilidade de morte entre 15 e 60 anos por 1000 habitantes",
+                y = " ") +
+  ggplot2::theme_light() +
+  ggplot2::theme(plot.title = (ggplot2::element_text(hjust = 0.5,
+                                                     size = 12,
+                                                     face = "bold")),
+                 axis.title = (ggplot2::element_text(size = 8,
+                                                     face = "bold"))
+  )
+
+```
+```{r echo=FALSE, fig.align= "center"}
+# Grafico de linha dos paises da america latina por ano
+
+america_sul %>%
+  ggplot2::ggplot(mapping = ggplot2::aes(x = Year,
+                                         y = `Both sexes`,
+                                         color = Country)) +
+  ggplot2::geom_line(na.rm = TRUE, show.legend = FALSE) +
+  ggplot2::facet_wrap(~Country, ncol = 3)+
+  ggplot2::labs(title = "Figura 2. Taxa de Mortalidade dos Países da América Latina entre 2000 e 2016",
+                x = "",
+                y = "Probabilidade de morte entre 15 e 60 anos por 1000 habitantes") +
+  ggplot2::theme_light() +
+  ggplot2::theme(plot.title = (ggplot2::element_text(hjust = 0.5,
+                                                     size = 12,
+                                                     face = "bold")),
+                 axis.title = (ggplot2::element_text(size = 08,
+                                                     face = "bold")))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
