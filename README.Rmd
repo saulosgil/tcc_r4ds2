@@ -52,7 +52,7 @@ base %>%
     caption = "Tabela 1. Probabilidade de morte entre 15 e 60 anos por 1000 habitantes.",
     format.args = list(big.mark = ",")
   )
-  # kableExtra::kable_classic_2() %>% 
+  # kableExtra::kable_classic_2() %>%
   # kableExtra::scroll_box(width = "500px", height = "200px")
 
 ```
@@ -118,6 +118,7 @@ america_sul %>%
                  axis.title = (ggplot2::element_text(size = 08,
                                                      face = "bold")))
 ```
+
 A obesidade e a inatividade física são reconhecidos preditores independentes de mortalidade em distintas populações. Neste sentido, é razoável especular que o Brasil apresente uma elevada prevalência de obesidade e inatividade física o que poderia explicar, em parte, a sustentada e elevada probabilidade de mortalidade observada na última década na população brasileira. Além disso, tanto a obesidade quanto a inatividade física estão associados a diversas doenças cardiometabólicas tais como diabetes e hipertensão arterial e, como uma consequência, uma piora na qualidade de vida. 
 A série temporal de dados disponibilizados pela WHO sobre obesidade mostra que desde o ano de 2000 o Brasil apresenta um aumento na prevalência de obesidade sendo que, no ano de 2016, 22% da população apresentada índice de massa corporal (IMC) > que 30 kg/m². A Figura 3 ilustra a prevalência da obesidade na população brasileira entre os anos 2000 e 2016.
 ```{r include=FALSE}

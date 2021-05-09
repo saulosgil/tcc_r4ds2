@@ -5207,6 +5207,7 @@ públicas e, a partir daí, reduzir os índices de mortalidade do Brasil.
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 <img src="README_files/figure-gfm/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+
 A obesidade e a inatividade física são reconhecidos preditores
 independentes de mortalidade em distintas populações. Neste sentido, é
 razoável especular que o Brasil apresente uma elevada prevalência de
