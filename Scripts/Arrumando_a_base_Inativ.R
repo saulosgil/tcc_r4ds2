@@ -46,11 +46,10 @@ base_de_dados <-
     "Pais" = as.character(Pais),
     "Ano" = as.double(Ano),
     "Grupo_de_idade" = as.character(Grupo_de_idade),
-    "Ina_ambos_sexos" = as.double(Ina_ambos_sexos),
-    "Ina_masc" = as.double(Ina_masc),
-    "Ina_fem" = as.double(Ina_fem),
+    "Ina_ambos_sexos" = as.numeric(Ina_ambos_sexos),
+    "Ina_masc" = as.numeric(Ina_masc),
+    "Ina_fem" = as.numeric(Ina_fem),
   ) %>%
-  dplyr::glimpse() %>%
-  tibble::view()
+  dplyr::glimpse()
 
 readr::write_rds(x = base_de_dados, file = "data/inatividade_fisica.rds")
