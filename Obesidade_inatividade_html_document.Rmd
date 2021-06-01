@@ -1,0 +1,167 @@
+---
+title: OBESIDADE E INATIVIDADE FÍSICA COMO FATORES DE RISCO DE MORTALIDADE NA POPULAÇÃO BRASILEIRA
+author: "Saulo Gil, Phd"
+date: "26/05/2021"
+output:
+   prettydoc::html_pretty:
+    theme: leonids
+---
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# Lendo a base de dados
+
+base <-
+  readr::read_csv("data-raw/data_mortality.csv",
+                  skip = 1)
+```
+
+
+```{r echo=FALSE, message=TRUE, warning=TRUE, paged.print=TRUE}
+
+# Verificando a posição do Brasil no mundo
+
+posicao_br <- base |> 
+  dplyr::filter(Year == 2016) |> 
+  dplyr::arrange(`Both sexes`, .desc = TRUE)
+
+pos_br_rmd <- which(posicao_br$Country %in% "Brazil")
+
+```
+O objetivo deste projeto foi verificar os países com maior taxa de mortalidade a partir da análise da base de dados disponibilizada pela Organização Mundial de Saúde (World Health Organization – WHO), verificar como o Brasil está disposto nesta lista considerando todos os países do mundo e os países da América do Sul no qual o Brasil faz parte e, por fim, verificar a prevalência de obesidade e inatividade, ambos fatores de risco para mortalidade.
+Após a analise da base de dados de mortalidade da WHO nota-se que o Brasil encontra-se na posição `r pos_br_rmd` quando considerado todos os países do munto. A tabela abaixo (Tabela 1) apresenta os dados por pais dividido por sexo a fim de ilustrar a taxa de mortalidade de adutos listados em ordem alfabética.
+
+```{r echo=FALSE, fig.align='center', out.width="100%"}
+base |> 
+  dplyr::filter(Year == "2016") |> 
+  dplyr::select(Country, "Both sexes", Male, Female) |> 
+  knitr::kable(
+    format = "html",
+    col.names = c("País", "Ambos sexos", "Homem", "Mulher"),
+    align = "cccc",
+    caption = "Tabela 1. Taxa de mortalidade de adultos (probabilidade de morrer entre 15 e 60 anos por 1000 habitantes).",
+    format.args = list(big.mark = ",")
+  ) |> 
+  kableExtra::kable_classic_2() |> 
+  kableExtra::scroll_box(width = "900px", height = "400px")
+
+```
+
+Na América latina, a Guiana Francesa lidera a lista com a maior probabilidade de morte entre indivíduos com 15 a 60 anos de idade por 1000 pessoas. Já o Brasil encontra-se na 6° posição entre os países latino-americanos, estando na frente da Colômbia (pois é, na frente da Colômbia de Pablo Escobar), Peru, Argentina, Uruguai e Chile. Esses dados estão ilustrados na Figura 1.
+Adicionalmente, quando observamos a evolução da probabilidade de morte dos países latinos (Figura 2) precebe-se que na última década esses valores permaneceram praticamente estáveis mesmo com avanços importantes nos tratamentos de doenças crônicas como, por exemplo, hipertensão arterial, diabetes, entre outras. Neste cenário, identificar possíveis fatores de risco de mortalidade se torna fundamental uma vez que a identificação desses fatores de risco pode possibilitar o direcionamento de políticas públicas e, a partir daí, buscar estratégias que busquem um aumento na expectativa de vida da população.
+
+```{r include=FALSE, out.width="100%"}
+br <- base |> dplyr::filter(Country == "Brazil")
+arg <- base |> dplyr::filter(Country == "Argentina")
+bol <- base |> dplyr::filter(Country == "Bolivia (Plurinational State of)")
+ur <- base |> dplyr::filter(Country == "Uruguay")
+ch <- base |> dplyr::filter(Country == "Chile")
+ven <- base |> dplyr::filter(Country == "Venezuela (Bolivarian Republic of)")
+col <- base |> dplyr::filter(Country == "Colombia")
+per <- base |> dplyr::filter(Country == "Peru")
+sur <- base |> dplyr::filter(Country == "Suriname")
+par <- base |> dplyr::filter(Country == "Paraguay")
+guy <- base |> dplyr::filter(Country == "Guyana")
+
+# Jutando os elementos dos paises da america latina em uma mesma base
+
+america_sul <-
+  dplyr::bind_rows(br, arg, bol, ur, ch, ven, col, per, sur, par, guy)
+```
+```{r echo=FALSE, out.width="100%"}
+# Grafico de coluna dos paises da ameica latina
+
+america_sul |> 
+  ggplot2::ggplot(mapping = ggplot2::aes(x = `Both sexes`,
+                                         y = forcats::fct_reorder(
+                                          Country, `Both sexes`,
+                                          .desc = FALSE), fill = Country)) +
+  ggplot2::geom_col(na.rm = TRUE, show.legend = FALSE) +
+  ggplot2::labs(title = "Figura 1.Taxa de Mortalidade dos Países da América Latina",
+                x = "Probabilidade de morte entre 15 e 60 anos por 1000 habitantes",
+                y = " ") +
+  ggplot2::theme_light() +
+  ggplot2::theme(plot.title = (ggplot2::element_text(hjust = 0.5,
+                                                     size = 12,
+                                                     face = "bold")),
+                 axis.title = (ggplot2::element_text(size = 8,
+                                                     face = "bold"))
+  )
+
+```
+```{r echo=FALSE, fig.align= "center", out.width="100%"}
+# Grafico de linha dos paises da america latina por ano
+
+america_sul |> 
+  ggplot2::ggplot(mapping = ggplot2::aes(x = Year,
+                                         y = `Both sexes`,
+                                         color = Country)) +
+  ggplot2::geom_line(na.rm = TRUE, show.legend = FALSE) +
+  ggplot2::facet_wrap(~Country, ncol = 3)+
+  ggplot2::labs(title = "Figura 2. Taxa de Mortalidade dos Países da América Latina entre 2000 e 2016",
+                x = "",
+                y = "Taxa de mortalidade de adultos (probabilidade de morrer entre 15 e 60 anos por 1000 habitantes)") +
+  ggplot2::theme_light() +
+  ggplot2::theme(plot.title = (ggplot2::element_text(hjust = 0.5,
+                                                     size = 12,
+                                                     face = "bold")),
+                 axis.title = (ggplot2::element_text(size = 08,
+                                                     face = "bold")))
+```
+
+A obesidade e a inatividade física são reconhecidos preditores independentes de mortalidade em distintas populações. Neste sentido, é razoável especular que o Brasil apresente uma elevada prevalência de obesidade e inatividade física o que poderia explicar, ao menos parcialmente, a elevada e sustentada probabilidade de mortalidade observada na última década. Além disso, tanto a obesidade quanto a inatividade física estão associados a diversas doenças cardiometabólicas tais como diabetes e hipertensão arterial e, como consequência, a uma piora na qualidade de vida. 
+A série temporal de dados disponibilizados pela WHO sobre obesidade mostra que desde o ano de 2000 o Brasil apresenta um aumento na prevalência de obesidade. No ano de 2016, 22% da população apresentava um índice de massa corporal (IMC) > que 30 kg/m². A Figura 3 ilustra a prevalência da obesidade na população brasileira entre os anos 2000 e 2016.
+```{r include=FALSE}
+# Lendo a base de obesidade
+Obesidade <- readr::read_rds("data/obesidade.rds")
+```
+```{r echo=FALSE, fig.align= "center", out.width="100%"}
+# Grafico da obesidade ao longo dos anos
+Obesidade |> 
+  dplyr::filter(
+    País == "Brazil"
+  ) |> 
+  tidyr::pivot_longer(cols = everything()) |> 
+  dplyr::slice(2:19) |> 
+  ggplot2::ggplot(mapping = ggplot2::aes(x = name,
+                                         y = value,
+                                         fill = name)) +
+  ggplot2::geom_col(na.rm = TRUE, show.legend = TRUE) +
+  ggplot2::scale_x_discrete(breaks = c(2016, 2000, 10)) +
+  ggplot2::labs(title = "Figura 3. Percentual da população brasileira com obesidade (IMC>30kg/m²)",
+                x = "",
+                y = "Percentual da população com IMC>30kg/m²") +
+  ggplot2::theme(plot.title = (ggplot2::element_text(hjust = 0.5,
+                                                     size = 12,
+                                                     face = "bold")),
+                 axis.title = (ggplot2::element_text(size = 12,
+                                                     face = "bold")))
+
+```
+Com relação a inatividade física, até o final do ano passado, a WHO considerava inativo todas aquelas pessoas que não conseguiam realizar um total de 150 minutos por semana de atividades física moderadas e/ou vigorosas como, por exemplo, caminhar rapidamente. Embora a WHO não disponibilize séries temporais com relação aos dados de inatividade física é possível analisar o percentual da população classificada como inativo no ano de 2016. Ao analisar esses dados nota-se que o Brasil se encontra na ##4° posição considerando TODOS os países do mundo com 47% DE TODA SUA POPULAÇÃO CLASSIFICADA COMO INATIVA.
+```{r include=FALSE}
+# Lendo a base de obesidade
+inat <- readr::read_rds("data/inatividade_fisica.rds") |> 
+  tibble::glimpse()
+```
+```{r echo=FALSE, fig.align= "center", out.width="100%"}
+# Grafico Inatividade física dos 10 paises com maior inatividade
+inat |> 
+  dplyr::filter(!is.na(Ina_ambos_sexos)) |> 
+  dplyr::arrange(Ina_ambos_sexos) |> 
+  dplyr::slice_tail(n = 10) |> 
+  ggplot2::ggplot(mapping = ggplot2::aes(x = Ina_ambos_sexos,
+                                         y = forcats::fct_reorder(
+                                           Pais, Ina_ambos_sexos
+                                         ),
+                                         fill = Pais)) +
+  ggplot2::geom_col(show.legend = FALSE) +
+  ggplot2::labs(title = "Figura 4. Percentual da População Classificada como Inativa",
+                x = "Percentual da população inativa (%)",
+                y = " ") +
+  ggplot2::theme(plot.title = (ggplot2::element_text(hjust = 0.5,
+                                                     size = 12,
+                                                     face = "bold")),
+                 axis.title = (ggplot2::element_text(size = 12,
+                                                     face = "bold")))
+```
+Por fim, com base na análise das bases de dados da WHO de probabilidade de mortalidade, prevalência de obesidade e nível de atividade física é possível verificar que o Brasil apresenta uma elevada prevalência de obesidade (22%) e inatividade física (47%) em sua população. Esses resultados sugerem que políticas públicas devem buscar estratégias para reduzir os índices de obesidade e inatividade física uma vez que estas condições são reconhecidos preditores de doenças cardiometabólicas e mortalidade. Cumpre destacar que as analises aqui apresentadas não indicam uma relação de causalidade entre as variáveis e alguma cautela deve ser tomada na interpretação desses resultados.

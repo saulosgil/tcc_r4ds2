@@ -40,23 +40,7 @@ pos_br_rmd <- which(posicao_br$Country %in% "Brazil")
 
 ```
 O objetivo deste projeto foi verificar os países com maior taxa de mortalidade a partir da análise da base de dados disponibilizada pela Organização Mundial de Saúde (World Health Organization – WHO), verificar como o Brasil está disposto nesta lista considerando todos os países e apenas os países da América do Sul no qual o Brasil faz parte e, por fim, verificar a prevalência de obesidade e inatividade dois importantes fatores de risco para mortalidade.
-Primeiramente, foi analisada a base de dados de mortalidade da WHO. Considerando todos os países do mundo, o Brasil encontra-se na posição `r pos_br_rmd`. A tabela abaixo (Tabela 1) mostra os dados por pais divididos por sexo a fim de ilustrar a probabilidade de morte entre 15 e 60 anos por 1000 habitantes listando os países por ordem alfabética.
-```{r echo=FALSE}
-base %>%
-  dplyr::filter(Year == "2016") %>%
-  dplyr::select(Country, "Both sexes", Male, Female) %>%
-  knitr::kable(
-    format = "html",
-    col.names = c("País", "Ambos sexos", "Homem", "Mulher"),
-    align = "cccc",
-    caption = "Tabela 1. Probabilidade de morte entre 15 e 60 anos por 1000 habitantes.",
-    format.args = list(big.mark = ",")
-  )
-  # kableExtra::kable_classic_2() %>%
-  # kableExtra::scroll_box(width = "500px", height = "200px")
-
-```
-
+Primeiramente, foi analisada a base de dados de mortalidade da WHO. Considerando todos os países do mundo, o Brasil encontra-se na posição `r pos_br_rmd`.
 Na América latina, a Guiana Francesa lidera a lista com a maior probabilidade de morte entre indivíduos com 15 a 60 anos de idade por 1000 pessoas. Já o Brasil encontra-se na 6° posição entre os países latino-americanos, estando na frente da Colômbia (pois é, na frente da Colômbia de Pablo Escobar), Peru, Argentina, Uruguai e Chile. Esses dados estão apresentados em detalhes na figura 1.
 Adicionalmente, quando observamos a evolução da probabilidade de morte dos países latinos (Figura 2) nota-se que na última década esses valores permaneceram praticamente estáveis mesmo com avanços e descobertas importantes nos tratamentos de doenças crônicas como, por exemplo, hipertensão arterial, diabetes, entre outras. Neste cenário identificar possíveis fatores de risco de mortalidade se torna fundamental uma vez que a identificação dos fatores de risco pode possibilitar o direcionamento de políticas públicas e, a partir daí, reduzir os índices de mortalidade do Brasil.
 
@@ -110,7 +94,7 @@ america_sul %>%
   ggplot2::facet_wrap(~Country, ncol = 3)+
   ggplot2::labs(title = "Figura 2. Taxa de Mortalidade dos Países da América Latina entre 2000 e 2016",
                 x = "",
-                y = "Probabilidade de morte entre 15 e 60 anos por 1000 habitantes") +
+                y = "Taxa de mortalidade de adultos (probabilidade de morrer entre 15 e 60 anos por 1000 habitantes)") +
   ggplot2::theme_light() +
   ggplot2::theme(plot.title = (ggplot2::element_text(hjust = 0.5,
                                                      size = 12,
